@@ -1,0 +1,118 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+tabla<-read.csv("titanic.csv")
+tabla<-data.frame(tabla)
+```
+
+```{r}
+summary(tabla)
+```
+```{r}
+names(tabla)
+```
+
+
+```{r}
+str(tabla)
+```
+
+```{r}
+hermanosconyuges<-head(tabla$SibSp)
+padreshijos<-head(tabla$Parch)
+
+
+tabla$TTF<- tabla$SibSp+tabla$Parch+1
+
+head(tabla$TTF, 20) 
+```
+
+```{r}
+summary(tabla$TTF)
+```
+
+```{r}
+STTF<-table(tabla$TTF, tabla$Survived)
+
+STTF<-data.frame("0"=STTF[,1],"1"=STTF[,2])
+
+STTF$proporcion<-(STTF$X1/(STTF$X1+STTF$X0))
+
+MUERE<-(STTF$X0)
+VIVE<-(STTF$X1)
+
+MUEREVIVE<-data.frame(MUERE,VIVE)
+
+summary(STTF)
+```
+
+```{r}
+plot(MUERE, type = "o", ylim = c(0, max(MUERE, VIVE)), col = "RED")  
+
+lines(VIVE, type = "o", lty = 2, col = "BLUE")  
+```
+
+```{r}
+tabla$DISfamilia[tabla$TTF == 1] <- 1
+tabla$DISfamilia[tabla$TTF < 5 & tabla$TTF > 1] <- 2
+tabla$DISfamilia[tabla$TTF > 4] <- 3
+
+v<-data.frame(tabla$DISfamilia,tabla$TTF, MUEREVIVE$MUERE, MUEREVIVE$VIVE)
+```
+
+```{r}
+library(rpart)       # performing regression trees
+library(rpart.plot)  # plotting regression trees
+library(ipred)       # bagging
+library(caret)       # bagging
+```
+
+```{r}
+m1 <- rpart(
+  formula = tabla$DISfamilia ~ .,
+  data    = v,
+  method  = "anova"
+  )
+
+rpart.plot(m1)
+```
+
+```{r}
+na_embarked <- tabla[is.na(tabla$Embarked),]
+na_embarked2<-data.frame(na_embarked)
+na_embarked2[!is.na(na_embarked$Embarked),]
+```
+
+```{r}
+na_age <- tabla[is.na(tabla$Age),]
+
+sapply(na_age, function(x) sum(is.na(x))) 
+```
+
+```{r}
+summary(na_age$Age)
+```
+
+```{r}
+tablaage<-tabla$Age
+tg<-data.frame(tablaage)
+
+datostg <- na.omit(tg)
+
+summary(datostg)
+```
+
+```{r}
+valorgenerado<-sample(20:38,177,replace=T) 
+       
+tg[is.na(tg)] <- valorgenerado  
+              
+TABLAAGE_ARREGLADA<-data.frame(tg)
+
+summary(TABLAAGE_ARREGLADA)
+```
+
