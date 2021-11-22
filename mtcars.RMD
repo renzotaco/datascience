@@ -1,0 +1,49 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+mtcars <- read.csv("mtcars.csv")
+head(mtcars)
+```
+
+```{r}
+str(mtcars)
+```
+
+```{r}
+summary(mtcars)
+```
+```{r}
+hist(mtcars$mpg)
+```
+
+```{r}
+hist(mtcars$hp)
+```
+
+```{r}
+plot(hp ~ mpg, data=mtcars, xlab="hp", ylab="mpg")
+```
+
+```{r}
+ab_fit <- lm(hp~mpg, data=mtcars)
+
+plot(hp~mpg, data=mtcars, xlab="hp", ylab="mpg")
+
+abline(ab_fit, col="red", lwd=3)
+```
+
+```{r}
+summary(ab_fit)
+```
+y= ax + b
+
+y -8.83(mpg) + 324.08
+
+```{r}
+
+```
+
